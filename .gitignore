@@ -41,8 +41,6 @@ build/Release
 node_modules/
 jspm_packages/
 
-# npm lockfile generated locally via `npm install`; do not commit
-package-lock.json
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
