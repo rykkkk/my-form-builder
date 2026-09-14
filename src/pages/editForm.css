@@ -1,0 +1,157 @@
+/* ==========================================================================
+   Edit form — two-pane page editor
+   Pairs with src/pages/editForm.tsx. Colours follow the Ontario palette.
+   ========================================================================== */
+
+/* Two-pane layout: sticky page sidebar + main editor sharing the width. */
+.edit-form__header {
+	margin-bottom: 1.5rem;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem;
+}
+
+.edit-form__layout {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2rem;
+	align-items: flex-start;
+}
+
+.edit-form__sidebar {
+	flex: 1 1 16rem;
+	min-width: 14rem;
+	max-width: 22rem;
+	position: sticky;
+	top: 1rem;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	max-height: calc(100vh - 2rem);
+}
+
+.edit-form__sidebar-heading {
+	margin: 0;
+}
+
+.edit-form__main {
+	flex: 3 1 28rem;
+	min-width: 0;
+}
+
+/* Even vertical rhythm between the main editor sections. */
+.edit-form__main > section {
+	margin-bottom: 1.5rem;
+}
+
+/* Stack the panes and release the sticky sidebar on small screens. */
+@media (max-width: 48rem) {
+	.edit-form__sidebar {
+		position: static;
+		max-width: none;
+		max-height: none;
+		flex-basis: 100%;
+	}
+
+	.edit-form__main {
+		flex-basis: 100%;
+	}
+}
+
+.edit-form__page-list {
+	list-style: none;
+	margin: 0;
+	padding: 0.25rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+	/* Scroll the list itself (not the whole sidebar) when pages are many. */
+	flex: 1 1 auto;
+	overflow-y: auto;
+}
+
+/* Each page is a selectable card (rendered as a button for keyboard access). */
+.edit-form__page-card {
+	display: block;
+	width: 100%;
+	text-align: left;
+	padding: 1rem;
+	cursor: pointer;
+	background: #ffffff;
+	border: 2px solid #cccccc;
+	border-radius: 4px;
+}
+
+.edit-form__page-card:hover {
+	border-color: #0066cc;
+}
+
+.edit-form__page-card:focus-visible {
+	outline: 3px solid #009ade;
+	outline-offset: 1px;
+}
+
+.edit-form__page-card--active {
+	background: #e5f3fb;
+	border-color: #0066cc;
+}
+
+.edit-form__page-card-title {
+	display: block;
+	font-weight: 700;
+}
+
+.edit-form__page-card-type {
+	display: block;
+	color: #4d4d4d;
+}
+
+.edit-form__page-card-count {
+	display: block;
+	color: #4d4d4d;
+	font-size: 0.875rem;
+}
+
+/* Horizontal field group that wraps on small screens. */
+.edit-form__row {
+	display: flex;
+	gap: 1rem;
+	flex-wrap: wrap;
+}
+
+/* Inline validation message for a duplicate or invalid step number. */
+.edit-form__error {
+	color: #cd0000;
+	font-weight: 600;
+	margin: 0.25rem 0 0;
+}
+
+/* Notice shown when step numbers clash across branching paths. */
+.edit-form__notice {
+	margin: 1rem 0 1rem 0;
+	padding: 1rem;
+	border-left: 4px solid #ffb326;
+	background: #f6efe6;
+}
+
+.edit-form__notice p {
+	margin-top: 0;
+}
+
+.edit-form__notice .ontario-button {
+	margin-top: 0.5rem;
+}
+
+/* Confirmation shown after a successful save, listing what was saved. */
+.edit-form__saved {
+	margin: 1rem 0 1rem 0;
+	padding: 1rem;
+	border-left: 4px solid #2e8540;
+	background: #e6f3e6;
+}
+
+.edit-form__saved p {
+	margin-top: 0;
+}

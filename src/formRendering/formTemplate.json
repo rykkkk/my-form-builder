@@ -1,0 +1,374 @@
+{
+  "schemaVersion": 1,
+  "exportedAt": "2026-09-11T15:53:52.215Z",
+  "form": {
+    "settings": {
+      "formId": "sample-service-application",
+      "formName": {
+        "en": "Sample service application",
+        "fr": "Exemple de demande de service"
+      },
+      "appTitle": {
+        "en": "Sample Ontario service",
+        "fr": "Exemple de service Ontario"
+      },
+      "auth": "ps",
+      "createdDate": "2026-09-11T15:53:52.215Z",
+      "createdByUser": "sample.owner@ontario.ca",
+      "editable": true,
+      "lastUpdatedDate": "2026-09-11T15:53:52.215Z",
+      "lastUpdatedByUser": "sample.editor@ontario.ca",
+      "version": 1,
+      "coOwners": [
+        "sample.coowner@ontario.ca"
+      ],
+      "deployed": false,
+      "isComplete": true,
+      "headerSettings": {
+        "headerType": "ServiceOntario",
+        "dynamicOriginWithPublicSecure": true,
+        "enableExitPopup": true,
+        "exitPopupTitle": "Leave this application?",
+        "exitPopupMessage": "Your progress may not be saved if you leave this application.",
+        "exitPopupStayButtonLabel": "Stay on this page",
+        "exitPopupExitButtonLabel": "Exit without saving",
+        "headerInitScript": "",
+        "headerMenuItems": [
+          {
+            "id": "myAccount",
+            "label": {
+              "en": "My Account",
+              "fr": "Mon compte"
+            },
+            "icon": "#ontario-icon-account"
+          },
+          {
+            "id": "help",
+            "label": {
+              "en": "Help",
+              "fr": "Aide"
+            },
+            "link": {
+              "en": "https://www.ontario.ca/page/help",
+              "fr": "https://www.ontario.ca/fr/page/aide"
+            },
+            "icon": "#ontario-icon-information"
+          }
+        ]
+      },
+      "footerSettings": {
+        "footerType": "Expanded",
+        "expandedFooterContent": "<p>Contact us if you need help completing this application.</p>"
+      },
+      "UiAzureRegistration": "",
+      "UiAzureTenantId": "",
+      "redirectUrlOnAuthFailure": "https://example.ontario.ca/authentication-error",
+      "redirectUrlOnSubmit": "https://example.ontario.ca/application-submitted",
+      "updateApiUrl": "/api/applications/{id}",
+      "getApiUrl": "/api/applications/{id}",
+      "deleteApiUrl": "/api/applications/{id}",
+      "createApiUrl": "/api/applications",
+      "emailApiUrl": "/api/notifications/email",
+      "downloadApiUrl": "/api/applications/{id}/download",
+      "initialDataApiUrl": "/api/applications/initial-data",
+      "apiBasePath": "https://api.example.ontario.ca",
+      "apiKeyKey": "X-API-Key",
+      "apiKeyValue": "",
+      "useProxy": true
+    },
+    "pages": [
+      {
+        "pageSettings": {
+          "pageId": "welcome",
+          "pageType": "landing",
+          "previousPageId": "",
+          "stepIndicator": {
+            "showStepIndicator": true,
+            "stepNumber": 1,
+            "totalSteps": 3,
+            "stepBtnLabel": {
+              "en": "Start application",
+              "fr": "Commencer la demande"
+            },
+            "showBackButton": false,
+            "backBtnLabel": {
+              "en": "Back",
+              "fr": "Retour"
+            }
+          },
+          "traversalSettings": {
+            "defaultNextPageId": "applicant-details",
+            "technicalErrorPageId": "technical-error",
+            "branches": []
+          }
+        },
+        "elements": [
+          {
+            "elementID": "welcome-content",
+            "type": "HTML",
+            "settings": {
+              "htmlCode": "<h1>Apply for a sample service</h1><p>Use this form to submit your application online.</p>"
+            }
+          }
+        ]
+      },
+      {
+        "pageSettings": {
+          "pageId": "applicant-details",
+          "pageType": "blank",
+          "previousPageId": "welcome",
+          "stepIndicator": {
+            "showStepIndicator": true,
+            "stepNumber": 2,
+            "totalSteps": 3,
+            "stepBtnLabel": {
+              "en": "Continue",
+              "fr": "Continuer"
+            },
+            "showBackButton": true,
+            "backBtnLabel": {
+              "en": "Back",
+              "fr": "Retour"
+            }
+          },
+          "traversalSettings": {
+            "defaultNextPageId": "review",
+            "technicalErrorPageId": "technical-error",
+            "branches": [
+              {
+                "rule": {
+                  "field": "applicant-age",
+                  "operator": "lessThan",
+                  "value": "18"
+                },
+                "targetPageId": "not-eligible"
+              }
+            ]
+          }
+        },
+        "elements": [
+          {
+            "elementID": "details-introduction",
+            "type": "HTML",
+            "settings": {
+              "htmlCode": "<h1>Applicant details</h1><p>Enter the information requested below.</p>"
+            }
+          },
+          {
+            "elementID": "applicant-name",
+            "type": "Text",
+            "settings": {
+              "placeholder": {
+                "en": "Full legal name",
+                "fr": "Nom légal complet"
+              },
+              "maxLength": 100,
+              "minLength": 2,
+              "required": true
+            }
+          },
+          {
+            "elementID": "applicant-age",
+            "type": "Text",
+            "settings": {
+              "placeholder": {
+                "en": "Age",
+                "fr": "Âge"
+              },
+              "maxLength": 3,
+              "required": true,
+              "pattern": "^[0-9]{1,3}$"
+            }
+          },
+          {
+            "elementID": "preferred-contact",
+            "type": "Dropdown list",
+            "settings": {
+              "options": [
+                {
+                  "value": "email",
+                  "label": {
+                    "en": "Email",
+                    "fr": "Courriel"
+                  }
+                },
+                {
+                  "value": "phone",
+                  "label": {
+                    "en": "Phone",
+                    "fr": "Téléphone"
+                  }
+                }
+              ],
+              "multiple": false,
+              "required": true
+            }
+          },
+          {
+            "elementID": "application-date",
+            "type": "Date",
+            "settings": {
+              "DateISOFormat": true
+            }
+          },
+          {
+            "elementID": "mailing-address",
+            "type": "Address",
+            "advancedSettings": {
+              "addressType": "Mailing",
+              "isBXPaddress": false,
+              "isPostCodeOptional": false,
+              "isStreetNumberOptional": false,
+              "isStreetNameOptional": false,
+              "isMunicipalityOptional": false,
+              "isProvinceOptional": false,
+              "hideCountry": false,
+              "hideRuralRoute": false,
+              "hidePOBox": false,
+              "manualAddressChecked": false,
+              "lockStreetFieldsAfterPopulate": true
+            }
+          }
+        ]
+      },
+      {
+        "pageSettings": {
+          "pageId": "review",
+          "pageType": "review",
+          "previousPageId": "applicant-details",
+          "stepIndicator": {
+            "showStepIndicator": true,
+            "stepNumber": 3,
+            "totalSteps": 3,
+            "stepBtnLabel": {
+              "en": "Submit application",
+              "fr": "Soumettre la demande"
+            },
+            "showBackButton": true,
+            "backBtnLabel": {
+              "en": "Back to details",
+              "fr": "Retour aux renseignements"
+            }
+          },
+          "traversalSettings": {
+            "defaultNextPageId": "confirmation",
+            "technicalErrorPageId": "technical-error",
+            "branches": []
+          }
+        },
+        "elements": [
+          {
+            "elementID": "review-content",
+            "type": "HTML",
+            "settings": {
+              "htmlCode": "<h1>Review your application</h1><p>Confirm that your information is complete and accurate before submitting.</p>"
+            }
+          },
+          {
+            "elementID": "submit-application",
+            "type": "Button",
+            "settings": {
+              "btnText": {
+                "en": "Submit application",
+                "fr": "Soumettre la demande"
+              },
+              "btnType": "submit",
+              "btnClassName": "ontario-button ontario-button--primary",
+              "btnValue": "submit",
+              "btnImage": {
+                "src": "",
+                "alt": {
+                  "en": "",
+                  "fr": ""
+                }
+              },
+              "btnLoadingText": {
+                "en": "Submitting...",
+                "fr": "Soumission en cours..."
+              },
+              "btnAction": "submit",
+              "btnAPI": "/api/applications",
+              "btnAPIMethod": "POST",
+              "btnScript": "",
+              "isDisabled": false
+            }
+          }
+        ]
+      },
+      {
+        "pageSettings": {
+          "pageId": "confirmation",
+          "pageType": "confirmation",
+          "previousPageId": "review",
+          "stepIndicator": {
+            "showStepIndicator": false,
+            "showBackButton": false
+          },
+          "traversalSettings": {
+            "technicalErrorPageId": "technical-error",
+            "branches": []
+          }
+        },
+        "elements": [
+          {
+            "elementID": "confirmation-content",
+            "type": "HTML",
+            "settings": {
+              "htmlCode": "<h1>Application submitted</h1><p>Your confirmation number will be sent to you by email.</p>"
+            }
+          }
+        ]
+      },
+      {
+        "pageSettings": {
+          "pageId": "not-eligible",
+          "pageType": "error",
+          "previousPageId": "applicant-details",
+          "stepIndicator": {
+            "showStepIndicator": false,
+            "showBackButton": true,
+            "backBtnLabel": {
+              "en": "Back",
+              "fr": "Retour"
+            }
+          },
+          "traversalSettings": {
+            "branches": []
+          }
+        },
+        "elements": [
+          {
+            "elementID": "not-eligible-content",
+            "type": "HTML",
+            "settings": {
+              "htmlCode": "<h1>You are not eligible</h1><p>You must be at least 18 years old to submit this application.</p>"
+            }
+          }
+        ]
+      },
+      {
+        "pageSettings": {
+          "pageId": "technical-error",
+          "pageType": "error",
+          "previousPageId": "",
+          "stepIndicator": {
+            "showStepIndicator": false,
+            "showBackButton": false
+          },
+          "traversalSettings": {
+            "branches": []
+          }
+        },
+        "elements": [
+          {
+            "elementID": "technical-error-content",
+            "type": "HTML",
+            "settings": {
+              "htmlCode": "<h1>Something went wrong</h1><p>Try again later or contact support if the problem continues.</p>"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,200 @@
+/* ==========================================================================
+   Application navigation bar
+   Styling pairs with src/components/NavBar.tsx and src/components/MenuButton.tsx.
+   Colours follow the Ontario Design System palette.
+   ========================================================================== */
+
+.app-navbar__inner {
+	background-color: #ffffff;
+	border-bottom: 2px solid #1a1a1a;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+	/* Match the Ontario grid container (.ontario-row) so the brand lines up
+	   with the page heading below it. */
+	margin: 0 auto;
+	padding: 0.5rem 1rem;
+	text-decoration: none;
+}
+
+.app-navbar__brand {
+	color: #1a1a1a;
+	font-family: "Raleway", "Open Sans", sans-serif;
+	font-size: 1.25rem;
+	font-weight: 700;
+	/* Override the Ontario base `a` underline; only show it on hover. */
+	text-decoration: none;
+	/* No left padding so the brand text starts flush with the column gutter
+	   (.ontario-column padding-left: 1rem), aligning it with the page <h1>. */
+	padding: 0.5rem 0;
+}
+
+.app-navbar__brand:hover {
+	text-decoration: underline;
+}
+
+.app-navbar__list {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.25rem;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.app-navbar__item {
+	margin: 0;
+	position: relative;
+}
+
+/* Primary navigation links ------------------------------------------------ */
+.app-navbar__link {
+	display: inline-block;
+	padding: 0.75rem 1rem;
+	font-family: "Open Sans", sans-serif;
+	font-size: 1rem;
+	color: #1a1a1a;
+	text-decoration: none;
+	border-bottom: 3px solid transparent;
+}
+
+.app-navbar__link:hover {
+	background-color: #f2f2f2;
+	text-decoration: underline;
+}
+
+.app-navbar__link--active {
+	font-weight: 700;
+	border-bottom-color: #0066cc;
+}
+
+/* Visible keyboard focus indicator (WCAG 2.4.7). */
+.app-navbar__brand:focus-visible,
+.app-navbar__link:focus-visible {
+	outline: 3px solid #009ade;
+	outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Menu button (WAI-ARIA "Menu Button - links" pattern)
+   ========================================================================== */
+
+.menu-button {
+	position: relative;
+	display: inline-block;
+}
+
+.menu-button__trigger {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	/* Match .app-navbar__link's box exactly so the label sits on the same
+	   line as the other nav items (same padding + 3px transparent bottom
+	   border, no all-around border or radius that would shift it). */
+	padding: 0.75rem 1rem;
+	font-family: "Open Sans", sans-serif;
+	font-size: 1rem;
+	line-height: 1.5;
+	color: #1a1a1a;
+	background-color: #000000;
+	border: 0;
+	border-bottom: 3px solid transparent;
+	cursor: pointer;
+}
+
+.menu-button__trigger:hover {
+	background-color: #f2f2f2;
+}
+
+/* High-contrast-safe focus: thicker border with reduced padding so the
+   element does not shift, mirroring the W3C reference example. */
+.menu-button__trigger:focus-visible {
+	outline: 3px solid #009ade;
+	outline-offset: 1px;
+}
+
+/* The arrow inherits text colour so it stays visible in high-contrast mode. */
+.menu-button__icon {
+	fill: currentColor;
+	stroke: currentColor;
+	transition: transform 0.15s ease;
+}
+
+.menu-button__trigger[aria-expanded="true"] .menu-button__icon {
+	transform: rotate(180deg);
+}
+
+.menu-button__menu {
+	position: absolute;
+	top: 100%;
+	right: 0;
+	z-index: 100;
+	min-width: 14rem;
+	margin: 0.25rem 0 0;
+	padding: 0.25rem 0;
+	list-style: none;
+	background-color: #ffffff;
+	border: 1px solid #1a1a1a;
+	border-radius: 4px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+	/* Hidden by default; toggled by the --open modifier. */
+	display: none;
+}
+
+.menu-button__menu--open {
+	display: block;
+}
+
+.menu-button__item {
+	display: block;
+	padding: 0.625rem 1rem;
+	font-family: "Open Sans", sans-serif;
+	font-size: 1rem;
+	color: #1a1a1a;
+	text-decoration: none;
+}
+
+.menu-button__item:hover {
+	background-color: #f2f2f2;
+	text-decoration: underline;
+}
+
+.menu-button__item:focus-visible {
+	outline: 3px solid #009ade;
+	outline-offset: -3px;
+	background-color: #e5f3fb;
+}
+
+/* ==========================================================================
+   Responsive: secondary items inline (wide) vs. collapsed "More" menu (narrow)
+   ========================================================================== */
+/* Wide screens: show secondary links inline; the "More" menu is redundant. */
+.app-navbar__item--more {
+	display: none;
+}
+
+/* ==========================================================================
+   Small screens
+   ========================================================================== */
+@media (max-width: 40rem) {
+	.app-navbar__inner {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.app-navbar__list {
+		width: 100%;
+	}
+
+	/* Collapse the secondary links into the "More" menu button. */
+	.app-navbar__item--secondary {
+		display: none;
+	}
+
+	.app-navbar__item--more {
+		display: block;
+	}
+}
