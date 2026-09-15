@@ -1,0 +1,239 @@
+/* ==========================================================================
+   Routing modal — full-form flowchart editor
+   Pairs with src/pages/routingModal.tsx.
+   ========================================================================== */
+
+.routing-modal__overlay {
+	position: fixed;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	padding: 1rem;
+}
+
+.routing-modal {
+	background: #ffffff;
+	border-radius: 4px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+	width: min(1400px, 97vw);
+	height: 92vh;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.routing-modal__header {
+	padding: 0.75rem 1.5rem;
+	border-bottom: 1px solid #ccc;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.routing-modal__title {
+	margin: 0;
+}
+
+.routing-modal__body {
+	flex: 1 1 auto;
+	min-height: 0;
+	display: flex;
+}
+
+/* --- Flowchart canvas --------------------------------------------------- */
+.routing-canvas {
+	position: relative;
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: auto;
+	background: #f3f6f9;
+	background-image: radial-gradient(#d4dde6 1px, transparent 1px);
+	background-size: 22px 22px;
+	touch-action: none;
+}
+
+.routing-canvas__surface {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	min-width: 1600px;
+	min-height: 1200px;
+}
+
+.routing-edges {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+}
+
+.routing-edge-label {
+	font-size: 11px;
+	fill: #4d4d4d;
+}
+
+.routing-edge-label__bg {
+	fill: #ffffff;
+}
+
+/* --- Node --------------------------------------------------------------- */
+.routing-node {
+	position: absolute;
+	width: 200px;
+	height: 116px;
+	overflow: hidden;
+	background: #ffffff;
+	border: 2px solid #cccccc;
+	border-radius: 6px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+	-webkit-user-select: none;
+	user-select: none;
+}
+
+.routing-node--selected {
+	border-color: #0066cc;
+	box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.25);
+}
+
+.routing-node--start {
+	border-left: 6px solid #2e8540;
+}
+
+.routing-node--error {
+	border-left: 6px solid #cd0000;
+}
+
+.routing-node__header {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.5rem;
+	padding: 0.5rem 0.75rem;
+	cursor: grab;
+	border-bottom: 1px solid #eee;
+}
+
+.routing-node__header:active {
+	cursor: grabbing;
+}
+
+.routing-node__title {
+	font-weight: 700;
+	font-size: 0.9rem;
+	word-break: break-word;
+}
+
+.routing-node__type {
+	font-size: 0.75rem;
+	color: #4d4d4d;
+	white-space: nowrap;
+}
+
+.routing-node__body {
+	padding: 0.4rem 0.75rem 0.6rem;
+	font-size: 0.75rem;
+	color: #4d4d4d;
+}
+
+.routing-node__handles {
+	display: flex;
+	justify-content: space-between;
+	gap: 0.25rem;
+	padding: 0 0.5rem 0.5rem;
+}
+
+.routing-handle {
+	border: none;
+	border-radius: 999px;
+	color: #fff;
+	font-size: 0.65rem;
+	font-weight: 700;
+	padding: 0.15rem 0.5rem;
+	cursor: crosshair;
+	line-height: 1.2;
+}
+
+.routing-handle--default {
+	background: #0066cc;
+}
+
+.routing-handle--branch {
+	background: #d97706;
+}
+
+.routing-handle--error {
+	background: #cd0000;
+}
+
+.routing-handle:focus-visible {
+	outline: 2px solid #009ade;
+	outline-offset: 1px;
+}
+
+/* --- Side editor panel -------------------------------------------------- */
+.routing-panel {
+	flex: 0 0 22rem;
+	max-width: 22rem;
+	border-left: 1px solid #ccc;
+	padding: 1rem 1.25rem;
+	overflow-y: auto;
+	background: #fff;
+}
+
+.routing-panel h3 {
+	margin-top: 0;
+}
+
+.routing-branch {
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	padding: 0.75rem;
+	margin-bottom: 0.75rem;
+	background: #fafafa;
+}
+
+.routing-branch__row {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+	align-items: flex-end;
+}
+
+.routing-legend {
+	display: flex;
+	gap: 1rem;
+	flex-wrap: wrap;
+	font-size: 0.75rem;
+	color: #4d4d4d;
+}
+
+.routing-legend__item {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.35rem;
+}
+
+.routing-legend__swatch {
+	width: 1.5rem;
+	height: 0;
+	border-top-width: 3px;
+	border-top-style: solid;
+}
+
+.routing-legend__swatch--default {
+	border-top-color: #0066cc;
+}
+
+.routing-legend__swatch--branch {
+	border-top-color: #d97706;
+}
+
+.routing-legend__swatch--error {
+	border-top-color: #cd0000;
+	border-top-style: dashed;
+}
