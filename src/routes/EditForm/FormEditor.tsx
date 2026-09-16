@@ -57,7 +57,7 @@ export function FormEditor() {
                 props: {
                     text: "other text",
                 },
-            }
+            },
         ])
     }, [])
 
@@ -94,29 +94,35 @@ export function FormEditor() {
 
     return (
         <div style = {{
-            maxWidth: "80rem",
+            display: "flex",
             overflow: "hidden",
             justifyContent: "center",
-            backgroundColor: "lightgray",
         }}>
-            {/* DndContext is the context provider */}
-            <DndContext
-                collisionDetection = {closestCenter}
-                onDragEnd = {handleDragEnd}
-            >
-
-                {/* SortableContext defines an independent sortable collection */}
-                <SortableContext
-                    items = {layout.map((node) => node.id)}
-                    strategy = {verticalListSortingStrategy}
+            <div style = {{
+                position: "relative",
+                width: "calc(100vw - 20rem)",
+                maxWidth: "80rem",
+                backgroundColor: "lightgray",
+            }}>
+                {/* DndContext is the context provider */}
+                <DndContext
+                    collisionDetection = {closestCenter}
+                    onDragEnd = {handleDragEnd}
                 >
-                    {layout.map((node) => (
-                        <DragContainer key = {node.id} id = {node.id}>
-                            <RenderNode node = {node} />
-                        </DragContainer>
-                    ))}
-                </SortableContext>
-            </DndContext>
+
+                    {/* SortableContext defines an independent sortable collection */}
+                    <SortableContext
+                        items = {layout.map((node) => node.id)}
+                        strategy = {verticalListSortingStrategy}
+                    >
+                        {layout.map((node) => (
+                            <DragContainer key = {node.id} id = {node.id}>
+                                <RenderNode node = {node} />
+                            </DragContainer>
+                        ))}
+                    </SortableContext>
+                </DndContext>
+            </div>
         </div>
-  );
+    );
 }
