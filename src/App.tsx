@@ -6,6 +6,8 @@ import Help from "./routes/Help";
 import Settings from "./routes/Settings";
 import Templates from "./routes/Templates";
 
+import { FormEditor } from "./routes/EditForm/FormEditor";
+
 import {
   createBrowserRouter,
   RouterProvider,
@@ -45,6 +47,11 @@ const router = createBrowserRouter([{
 		{
 			path: "/saved",
 			element: <SavedFormsList />,
+		},
+
+		{
+			path: "/test",
+			element: <FormEditor />,
 		},
 	]
 }])
