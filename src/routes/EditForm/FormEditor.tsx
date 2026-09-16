@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useRef, useState, useEffect } from "react"
 import ElementLabel from "./renderComponents/ElementLabel"
 import {
   DndContext,
@@ -21,12 +21,14 @@ type Node = {
     nodeType: keyof typeof componentRegistry;
     props: any;
 }
+type NodeState = Record<string, any>
+type FormState = Record<string, NodeState>
 
 // renders an element depending on the node
-function RenderNode({ node }: { node: Node }) {
+function RenderNode({ node, state }: { node: Node, state: Record<string, any> }) {
   const Component = componentRegistry[node.nodeType];
 
-  return <Component {...node.props} />;
+  return <Component {...node.props} state = {state} />;
 }
 
 export function FormEditor() {
@@ -35,8 +37,19 @@ export function FormEditor() {
     // will load the form "someform"
     // reloading the page will prompt the user to save or discard changes (or it can just autosave)
 
+    // returns a node state for the node id, and creates one if it doesn't exist already
+    const formState = useRef<FormState>({});
+    function getNodeState(id: string): NodeState {
+        if (!formState.current[id]) {
+        formState.current[id] = {};
+        }
+
+        return formState.current[id];
+    }
+
     const [layout, setLayout] = useState<Node[]>([])
 
+    // add some values for testing
     useEffect(() => {
         setLayout([
             {
@@ -92,11 +105,36 @@ export function FormEditor() {
         });
     }
 
+    
+
+    // DOES NOTHING USEFUL. I only added this in so react rerenders to update json.stringify() later in thecode and to add new values
+    const [tickValue, setTick] = useState(4);
+    const nextId = useRef(4);
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const id = nextId.current++;
+
+            setLayout(prev => [
+                ...prev,
+                {
+                    id: id.toString(),
+                    nodeType: "ElementLabel",
+                    props: {
+                        text: "other text" + id.toString(),
+                    },
+                },
+            ]);
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, []);
+
     return (
         <div style = {{
             display: "flex",
             overflow: "visible",
             justifyContent: "center",
+            flexDirection: "column",
         }}>
             <div style = {{
                 position: "relative",
@@ -116,13 +154,17 @@ export function FormEditor() {
                         strategy = {verticalListSortingStrategy}
                     >
                         {layout.map((node) => (
-                            <DragContainer key = {node.id} id = {node.id}>
-                                <RenderNode node = {node} />
+                            <DragContainer key={node.id} id={node.id}>
+                                <RenderNode node={node} state={getNodeState(node.id)} />
                             </DragContainer>
                         ))}
                     </SortableContext>
                 </DndContext>
             </div>
+            <p>
+                {/* just displaying the current state of the form; remove later */}
+                {JSON.stringify(formState)}
+            </p>
         </div>
     );
 }
