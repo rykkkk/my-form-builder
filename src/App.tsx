@@ -17,7 +17,9 @@ import {
 const router = createBrowserRouter([{
 	element: <>
 		<NavBar />
-		<main id='main-content'>
+		<main id='main-content' style = {{
+			overflowX: "clip",
+		}}>
 			<div className='ontario-column ontario-small-12 ontario-large-12'>
 				<Outlet />
 			</div>
@@ -57,5 +59,5 @@ const router = createBrowserRouter([{
 }])
 
 export default function App() {
-	return <RouterProvider router={router} />;
+	return <RouterProvider router = {router} />;
 };

@@ -95,7 +95,7 @@ export function FormEditor() {
     return (
         <div style = {{
             display: "flex",
-            overflow: "hidden",
+            overflow: "visible",
             justifyContent: "center",
         }}>
             <div style = {{
