@@ -12,6 +12,7 @@ const NAV_ITEMS: NavItem[] = [
 	{ label: "Templates", route: "/templates"  },
 	{ label: "Settings", route: "/settings"  },
 	{ label: "Help & Resources", route: "/help"  },
+	{ label: "TESTING TESTING TESTING TESTING", route: "/test"  },
 ];
 
 export default function NavBar() {
