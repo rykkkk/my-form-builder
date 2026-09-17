@@ -1,34 +1,34 @@
-import { useEffect, useState } from "react"
+import { SettingSchema } from "../SettingsModal"
 
-export type LabelSchema = {
-    useRichText?: boolean,
-    text?: string,
+export type ElementLabelSchema = {
+    useRichText: boolean,
+    text: string,
 }
+export const ElementLabelDefaultSchema: ElementLabelSchema = {
+    useRichText: true,
+    text: "LoremIpsum",
+}
+export const ElementLabelSettingSchema: SettingSchema<ElementLabelSchema> = [
+    {
+        label: "Rich Text",
+        field: "useRichText",
+        type: "boolean",
+    },
+    {
+        label: "Text",
+        field: "text",
+        type: "string",
+    },
+]
 
-type ElementLabelProps = LabelSchema & {
-  state: Record<string, any>;
-};
-
-export default function ElementLabel({
-  useRichText: initialUseRichText,
-  text: initialText,
-  state,
-}: ElementLabelProps) {
-    const [useRichText, setUseRichText] = useState(initialUseRichText ?? false)
-    const [text, setText] = useState(initialText ?? "Lorem Ipsum")
-
-    useEffect(() => {
-        state.useRichText = useRichText
-        state.text = useRichText
-    }, [useRichText, text, state])
-
+export function ElementLabel({ state }: { state: ElementLabelSchema }) {
     return (
-        <div style = {{
+        <div style={{
             width: "100%",
             backgroundColor: "gray",
             marginBottom: "1rem",
         }}>
-            {text}
+            {state.text}
         </div>
     )
 }

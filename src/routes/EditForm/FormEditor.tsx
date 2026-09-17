@@ -1,5 +1,7 @@
+import { SettingsModal, SettingSchema } from "./SettingsModal";
+import React from "react";
 import { useRef, useState, useEffect } from "react"
-import ElementLabel from "./renderComponents/ElementLabel"
+import { componentRegistry } from "./componentRegistry";
 import {
   DndContext,
   closestCenter,
@@ -12,24 +14,19 @@ import {
 } from "@dnd-kit/sortable";
 import DragContainer from "./DragContainer"
 
-const componentRegistry = {
-    "ElementLabel": ElementLabel
-}
-
 type Node = {
     id: string;
     nodeType: keyof typeof componentRegistry;
-    props: any;
+    state: any;
 }
 type NodeState = Record<string, any>
 type FormState = Record<string, NodeState>
 
 // renders an element depending on the node
-function RenderNode({ node, state }: { node: Node, state: Record<string, any> }) {
-  const Component = componentRegistry[node.nodeType];
-
-  return <Component {...node.props} state = {state} />;
-}
+const RenderNode = React.memo(function ({ node }: { node: Node }) {
+  const entry = componentRegistry[node.nodeType];
+  return entry.render(node.state);
+})
 
 export function FormEditor() {
     // TODO: once the layout is complete, loading data shouldn't be too difficult if the schemas are right
@@ -38,45 +35,10 @@ export function FormEditor() {
     // reloading the page will prompt the user to save or discard changes (or it can just autosave)
 
     // returns a node state for the node id, and creates one if it doesn't exist already
-    const formState = useRef<FormState>({});
-    function getNodeState(id: string): NodeState {
-        if (!formState.current[id]) {
-        formState.current[id] = {};
-        }
-
-        return formState.current[id];
-    }
-
     const [layout, setLayout] = useState<Node[]>([])
-
-    // add some values for testing
-    useEffect(() => {
-        setLayout([
-            {
-                id: "0",
-                nodeType: "ElementLabel",
-                props: {},
-            },
-            {
-                id: "1",
-                nodeType: "ElementLabel",
-                props: {
-                    text: "other text",
-                },
-            },
-            {
-                id: "2",
-                nodeType: "ElementLabel",
-                props: {
-                    text: "other text",
-                },
-            },
-        ])
-    }, [])
 
     /*
         Hooks onto "onDragEnd" of a DndContext.
-        Essentially
     */
     function handleDragEnd(event: DragEndEvent) {
         const {
@@ -105,11 +67,18 @@ export function FormEditor() {
         });
     }
 
-    
+    function updateNodeState(id: string, patch: Partial<NodeState>) {
+        setLayout(prev =>
+        prev.map(node =>
+            node.id === id
+            ? { ...node, state: { ...node.state, ...patch } }
+            : node
+        )
+        );
+    }
 
     // DOES NOTHING USEFUL. I only added this in so react rerenders to update json.stringify() later in thecode and to add new values
-    const [tickValue, setTick] = useState(4);
-    const nextId = useRef(4);
+    const nextId = useRef(1);
     useEffect(() => {
         const interval = setInterval(() => {
             const id = nextId.current++;
@@ -119,52 +88,79 @@ export function FormEditor() {
                 {
                     id: id.toString(),
                     nodeType: "ElementLabel",
-                    props: {
+                    state: {
                         text: "other text" + id.toString(),
+                        useRichText: false,
                     },
                 },
             ]);
-        }, 3000);
+        }, 1000);
 
         return () => clearInterval(interval);
     }, []);
 
-    return (
-        <div style = {{
-            display: "flex",
-            overflow: "visible",
-            justifyContent: "center",
-            flexDirection: "column",
-        }}>
-            <div style = {{
+        const [settingsOpen, setSettingsOpen] = useState(false)
+        const [settingsReferenceState, setSettingsReferenceState] = useState<Record<string, unknown> | null>(null)
+        const [settingsReferenceSchema, setSettingsRefereneSchema] = useState<SettingSchema<any> | null>(null)
+        return (
+            <div style={{
                 position: "relative",
-                width: "calc(100vw - 20rem)",
-                maxWidth: "80rem",
-                backgroundColor: "lightgray",
+                width: "100%",
+                height: "100%",
             }}>
-                {/* DndContext is the context provider */}
-                <DndContext
-                    collisionDetection = {closestCenter}
-                    onDragEnd = {handleDragEnd}
-                >
+                <div style = {{
+                    display: "flex",
+                    overflow: "visible",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                }}>
+                    <div style = {{
+                        position: "relative",
+                        width: "calc(100vw - 20rem)",
+                        maxWidth: "80rem",
+                        backgroundColor: "lightgray",
+                    }}>
+                    
+                        <DndContext
+                            collisionDetection = {closestCenter}
+                            onDragEnd = {handleDragEnd}
+                        >
 
-                    {/* SortableContext defines an independent sortable collection */}
-                    <SortableContext
-                        items = {layout.map((node) => node.id)}
-                        strategy = {verticalListSortingStrategy}
-                    >
-                        {layout.map((node) => (
-                            <DragContainer key={node.id} id={node.id}>
-                                <RenderNode node={node} state={getNodeState(node.id)} />
-                            </DragContainer>
-                        ))}
-                    </SortableContext>
-                </DndContext>
+                            {/* SortableContext defines an independent sortable collection */}
+                            <SortableContext
+                                items = {layout.map((node) => node.id)}
+                                strategy = {verticalListSortingStrategy}
+                            >
+                                {layout.map((node) => (
+                                    <DragContainer key={node.id} id={node.id}>
+                                        <button style={{
+                                            position: "absolute",
+                                            right: "2rem",
+                                        }}
+                                        onClick={() => {
+                                            setSettingsRefereneSchema(componentRegistry[node.nodeType].optionsSchema)
+                                            setSettingsReferenceState(node.state)
+                                            setSettingsOpen(true)
+                                        }}>Settings</button>
+                                        <RenderNode key={node.id} node={node} />
+
+                                    </DragContainer>
+                                ))}
+                            </SortableContext>
+                        </DndContext>
+                    </div>
+                    <p>
+                        {/* just displaying the current state of the form; remove later */}
+                        {JSON.stringify(layout)}
+                    </p>
+                </div>
+                <SettingsModal
+                    open={settingsOpen}
+                    schema={settingsReferenceSchema}
+                    state={settingsReferenceState}
+                    onChange={updateNodeState}
+                    onClose={() => setSettingsOpen(false)}
+                />
             </div>
-            <p>
-                {/* just displaying the current state of the form; remove later */}
-                {JSON.stringify(formState)}
-            </p>
-        </div>
-    );
+        );
 }
