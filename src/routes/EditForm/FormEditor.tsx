@@ -23,18 +23,12 @@ type NodeState = Record<string, any>
 type FormState = Record<string, NodeState>
 
 // renders an element depending on the node
-const RenderNode = React.memo(function ({ node }: { node: Node }) {
+const RenderNode = React.memo(function({ node }: { node: Node }) {
   const entry = componentRegistry[node.nodeType];
   return entry.render(node.state);
 })
 
 export function FormEditor() {
-    // TODO: once the layout is complete, loading data shouldn't be too difficult if the schemas are right
-    // data will be retrieved here. the link will specify where the data comes from (e.g., formbuilder.ca/someform)
-    // will load the form "someform"
-    // reloading the page will prompt the user to save or discard changes (or it can just autosave)
-
-    // returns a node state for the node id, and creates one if it doesn't exist already
     const [layout, setLayout] = useState<Node[]>([])
 
     /*
@@ -67,16 +61,6 @@ export function FormEditor() {
         });
     }
 
-    function updateNodeState(id: string, patch: Partial<NodeState>) {
-        setLayout(prev =>
-        prev.map(node =>
-            node.id === id
-            ? { ...node, state: { ...node.state, ...patch } }
-            : node
-        )
-        );
-    }
-
     // DOES NOTHING USEFUL. I only added this in so react rerenders to update json.stringify() later in thecode and to add new values
     const nextId = useRef(1);
     useEffect(() => {
@@ -99,68 +83,93 @@ export function FormEditor() {
         return () => clearInterval(interval);
     }, []);
 
-        const [settingsOpen, setSettingsOpen] = useState(false)
-        const [settingsReferenceState, setSettingsReferenceState] = useState<Record<string, unknown> | null>(null)
-        const [settingsReferenceSchema, setSettingsRefereneSchema] = useState<SettingSchema<any> | null>(null)
-        return (
-            <div style={{
-                position: "relative",
-                width: "100%",
-                height: "100%",
+    const [settingsOpen, setSettingsOpen] = useState(false)
+    const [currentSelectedNode, setCurrentSelectedNode] = useState<Node | null>()
+    function updateNodeState(field: string, newValue: any) {
+        setLayout(prev =>
+            prev.map(node => {
+                if (node.id === currentSelectedNode.id) {
+
+                    /*
+                        RenderNode uses React.memo, which shallowly compares its props.
+                        Since `node` is passed as a prop, mutating `node.state` directly
+                        does not change the `node` reference, so React.memo may skip the
+                        render. We therefore create a new node object (and state object)
+                        when updating state so the `node` prop has a new reference.
+                    */
+                    const newNode = {
+                        ...node,
+                        state: { ...node.state, [field]: newValue },
+                    };
+
+                    // After cloning the node, set the current selected node to the new node.
+                    setCurrentSelectedNode(newNode)
+
+                    return newNode
+                }
+                return node
+            })
+        );
+    }
+
+    return (
+        <div style={{
+            position: "relative",
+            width: "100%",
+            height: "100%",
+        }}>
+            <div style = {{
+                display: "flex",
+                overflow: "visible",
+                justifyContent: "center",
+                flexDirection: "column",
             }}>
                 <div style = {{
-                    display: "flex",
-                    overflow: "visible",
-                    justifyContent: "center",
-                    flexDirection: "column",
+                    position: "relative",
+                    width: "calc(100vw - 20rem)",
+                    maxWidth: "80rem",
+                    backgroundColor: "lightgray",
                 }}>
-                    <div style = {{
-                        position: "relative",
-                        width: "calc(100vw - 20rem)",
-                        maxWidth: "80rem",
-                        backgroundColor: "lightgray",
-                    }}>
-                    
-                        <DndContext
-                            collisionDetection = {closestCenter}
-                            onDragEnd = {handleDragEnd}
+                
+                    <DndContext
+                        collisionDetection = {closestCenter}
+                        onDragEnd = {handleDragEnd}
+                    >
+                        {/* SortableContext defines an independent sortable collection */}
+                        <SortableContext
+                            items = {layout.map((node) => node.id)}
+                            strategy = {verticalListSortingStrategy}
                         >
+                            {layout.map((node) => (
+                                <DragContainer key={node.id} id={node.id}>
+                                    <button style={{
+                                        position: "absolute",
+                                        right: "2rem",
+                                    }}
+                                    onClick={() => {
+                                        setCurrentSelectedNode(node)
+                                        setSettingsOpen(true)
+                                    }}>Settings</button>
+                                    <RenderNode key={node.id} node={node} />
 
-                            {/* SortableContext defines an independent sortable collection */}
-                            <SortableContext
-                                items = {layout.map((node) => node.id)}
-                                strategy = {verticalListSortingStrategy}
-                            >
-                                {layout.map((node) => (
-                                    <DragContainer key={node.id} id={node.id}>
-                                        <button style={{
-                                            position: "absolute",
-                                            right: "2rem",
-                                        }}
-                                        onClick={() => {
-                                            setSettingsRefereneSchema(componentRegistry[node.nodeType].optionsSchema)
-                                            setSettingsReferenceState(node.state)
-                                            setSettingsOpen(true)
-                                        }}>Settings</button>
-                                        <RenderNode key={node.id} node={node} />
+                                </DragContainer>
+                            ))}
+                        </SortableContext>
+                    </DndContext>
 
-                                    </DragContainer>
-                                ))}
-                            </SortableContext>
-                        </DndContext>
-                    </div>
-                    <p>
-                        {/* just displaying the current state of the form; remove later */}
-                        {JSON.stringify(layout)}
-                    </p>
                 </div>
-                <SettingsModal
-                    open={settingsOpen}
-                    schema={settingsReferenceSchema}
-                    state={settingsReferenceState}
-                    onChange={updateNodeState}
-                    onClose={() => setSettingsOpen(false)}
-                />
+                <p>
+                    {/* just displaying the current state of the form; remove later */}
+                    {JSON.stringify(layout)}
+                </p>
             </div>
-        );
+            <SettingsModal
+                open={settingsOpen}
+                schema={currentSelectedNode ? componentRegistry[currentSelectedNode.nodeType].optionsSchema : null}
+                state={currentSelectedNode ? currentSelectedNode.state : null}
+                onChange={updateNodeState}
+                onClose={() => setSettingsOpen(false)}
+            />
+        </div>
+    );
 }
