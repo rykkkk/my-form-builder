@@ -6,8 +6,8 @@
     "lib": ["es2022", "dom", "dom.iterable"],
     "sourceMap": true,
     "allowJs": true,
-    "jsx": "react-jsx",
     "moduleResolution": "node",
+    "jsx": "react-jsx",
     "rootDir": "src",
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
@@ -15,8 +15,10 @@
     "strictNullChecks": false,
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
     "ignoreDeprecations": "5.0"
+  },
+  "paths": {
+    "@/*": ["./src/*"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist", "webpack.config.js"]
