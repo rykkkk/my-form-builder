@@ -23,12 +23,18 @@ export const ElementLabelSettingSchema: SettingSchema<ElementLabelSchema> = [
 
 export function ElementLabel({ state }: { state: ElementLabelSchema }) {
     return (
-        <div style={{
-            width: "100%",
-            backgroundColor: "gray",
-            marginBottom: "1rem",
-        }}>
-            {state.text}
+        <div
+            style={{
+                width: "100%",
+                backgroundColor: "gray",
+                marginBottom: "1rem",
+            }}
+        >
+            {state.useRichText ? (
+                <div dangerouslySetInnerHTML={{ __html: state.text }} />
+            ) : (
+                state.text
+            )}
         </div>
     )
 }
