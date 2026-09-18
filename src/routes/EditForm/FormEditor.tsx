@@ -20,7 +20,11 @@ type Node = {
     state: any;
 }
 type NodeState = Record<string, any>
-type FormState = Record<string, NodeState>
+type PageState = {
+    id: string,
+    name: string,
+    layout: Node[],
+}
 
 // renders an element depending on the node
 const RenderNode = React.memo(function({ node }: { node: Node }) {
@@ -29,6 +33,19 @@ const RenderNode = React.memo(function({ node }: { node: Node }) {
 })
 
 export function FormEditor() {
+
+    const [pages, setPages] = useState<PageState[]>([
+        {
+            id: "1",
+            name: "page1",
+            layout: [],
+        },
+        {
+            id: "2",
+            name: "page2",
+            layout: [],
+        }
+    ])
     const [layout, setLayout] = useState<Node[]>([
         {
             id: "1",
@@ -120,12 +137,42 @@ export function FormEditor() {
         );
     }
 
+    
+
     return (
         <div style={{
             position: "relative",
             width: "100%",
             height: "100%",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "start",
+            gap: "1rem",
         }}>
+            {/* pages */}
+            <div style={{
+                width: "30rem",
+                backgroundColor: "darkgray",
+                display: "flex",
+                alignContent: "center",
+                padding: "1rem",
+                flexDirection: "column",
+                gap: "10px",
+            }}>
+                {pages.map((item) => {
+                    return (<div key={item.id} style={{
+                        width: "calc(100%-3rem)",
+                        aspectRatio: 1.3,
+                        backgroundColor: "white",
+                    }}>
+                        {item.name}
+                    </div>)
+                })}
+
+            </div>
+
+
+            {/* editor */}
             <div style = {{
                 display: "flex",
                 overflow: "visible",
@@ -170,6 +217,13 @@ export function FormEditor() {
                     {/* just displaying the current state of the form; remove later */}
                     {JSON.stringify(layout)}
                 </p>
+                <div style={{
+                    display: "flex",
+                    gap: "10px",
+                }}>
+                    <button type="button">Previous</button>
+                    <button type="button">Next</button>
+                </div>
             </div>
             <SettingsModal
                 open={settingsOpen}
@@ -178,6 +232,9 @@ export function FormEditor() {
                 onChange={updateNodeState}
                 onClose={() => setSettingsOpen(false)}
             />
+
+            
         </div>
+        
     );
 }

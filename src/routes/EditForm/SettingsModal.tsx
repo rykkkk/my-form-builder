@@ -90,7 +90,7 @@ export function SettingsModal({
                 );
             }
 
-
+            
         })}
 
         <button onClick={onClose}>Close</button>
