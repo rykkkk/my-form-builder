@@ -6,6 +6,7 @@ export type SettingField<T extends Record<string, any>> = {
     | { type: "boolean" }
     | { type: "string" }
     | { type: "number"; min?: number; max?: number }
+    | { type: "date" }
   );
 }[keyof T];
 export type SettingSchema<T extends Record<string, any>> = SettingField<T>[];
@@ -72,6 +73,24 @@ export function SettingsModal({
                     </label>
                 );
             }
+
+            // date
+            if (setting.type === "date") {
+                return (
+                    <label key={idx}>
+                        {setting.label}
+                        <input
+                            type="date"
+                            value={state[setting.field] || ""}
+                            onChange={(e) =>
+                                onChange(setting.field, e.target.value)
+                            }
+                        />
+                    </label>
+                );
+            }
+
+
         })}
 
         <button onClick={onClose}>Close</button>

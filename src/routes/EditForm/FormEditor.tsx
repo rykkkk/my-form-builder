@@ -29,7 +29,15 @@ const RenderNode = React.memo(function({ node }: { node: Node }) {
 })
 
 export function FormEditor() {
-    const [layout, setLayout] = useState<Node[]>([])
+    const [layout, setLayout] = useState<Node[]>([
+        {
+            id: "1",
+            nodeType: "DateValue",
+            state: {
+                date: "",
+            },
+        },
+    ])
 
     /*
         Hooks onto "onDragEnd" of a DndContext.
@@ -62,7 +70,7 @@ export function FormEditor() {
     }
 
     // DOES NOTHING USEFUL. I only added this in so react rerenders to update json.stringify() later in thecode and to add new values
-    const nextId = useRef(1);
+    const nextId = useRef(2);
     useEffect(() => {
         const interval = setInterval(() => {
             const id = nextId.current++;
