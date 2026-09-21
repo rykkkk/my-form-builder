@@ -1,5 +1,5 @@
-import { ElementLabel, ElementLabelSchema, ElementLabelDefaultSchema, ElementLabelSettingSchema } from "./renderComponents/ElementLabel";
-import { DateValue, DateValueSchema, DateValueDefaultSchema, DateValueSettingSchema } from "./renderComponents/DateValue";
+import { ElementLabel, ElementLabelSchema, ElementLabelDefaultSchema, ElementLabelSettingSchema } from "./ElementLabel";
+import { DateValue, DateValueSchema, DateValueDefaultSchema, DateValueSettingSchema } from "./DateValue";
 
 export type registryItem<T extends Record<string, any>> = {
   render: (props: T) => React.ReactNode;
@@ -11,7 +11,7 @@ function createRegistryItem<T extends Record<string, any>>(item: registryItem<T>
   return item;
 }
 
-export const componentRegistry = {
+export const renderComponentRegistry = {
   ElementLabel: createRegistryItem<ElementLabelSchema>({
     render: (props) => <ElementLabel state={props} />,
     displaySchema: ElementLabelDefaultSchema,

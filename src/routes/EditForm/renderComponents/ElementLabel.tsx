@@ -1,4 +1,4 @@
-import { SettingSchema } from "../SettingsModal"
+import { SettingSchema } from "../modalComponents/modalComponentRegistry"
 
 export type ElementLabelSchema = {
     useRichText: boolean,
@@ -8,16 +8,16 @@ export const ElementLabelDefaultSchema: ElementLabelSchema = {
     useRichText: true,
     text: "LoremIpsum",
 }
-export const ElementLabelSettingSchema: SettingSchema<ElementLabelSchema> = [
+export const ElementLabelSettingSchema: SettingSchema = [
     {
         label: "Rich Text",
         field: "useRichText",
-        type: "boolean",
+        type: "ToggleInput",
     },
     {
         label: "Text",
         field: "text",
-        type: "string",
+        type: "TextInput",
     },
 ]
 

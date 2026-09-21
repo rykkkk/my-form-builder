@@ -1,18 +1,17 @@
-import { SettingSchema } from "../SettingsModal"
+import { SettingSchema } from "../modalComponents/modalComponentRegistry"
 
 export type DateValueSchema = {
     date: string,
 }
-
 export const DateValueDefaultSchema: DateValueSchema = {
     date: "",
 }
 
-export const DateValueSettingSchema: SettingSchema<DateValueSchema> = [
+export const DateValueSettingSchema: SettingSchema = [
     {
         label: "Date",
         field: "date",
-        type: "date",
+        type: "DateInput",
     },
 ]
 

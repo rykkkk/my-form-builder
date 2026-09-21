@@ -1,23 +1,32 @@
-export type SettingField<T extends Record<string, any>> = {
-  [K in keyof T]: {
-    label: string;
-    field: K;
-  } & (
-    | { type: "boolean" }
-    | { type: "string" }
-    | { type: "number"; min?: number; max?: number }
-    | { type: "date" }
-  );
-}[keyof T];
-export type SettingSchema<T extends Record<string, any>> = SettingField<T>[];
+import { modalComponentRegistry, SettingSchema, SettingField } from "./modalComponents/modalComponentRegistry";
 
-type SettingsModalProps<fields> = {
+type SettingsModalProps = {
   open: boolean; // is the modal open?
-  schema: SettingSchema<fields> | null; // the schema for the settings
-  state: Record<string, any> | null; // the state reference
+  schema: SettingSchema; // the schema for the settings
+  state: Record<string, any>; // the state reference
   onChange: (field: string, newValue: any) => void; // callback hen the user changes a setting
   onClose: () => void; // callback when the settings close
 };
+
+function SettingElement({
+  schema,
+  state,
+  onChange,
+}: {
+  schema: SettingField & any;
+  state: Record<string, any>;
+  onChange: (field: string, newValue: any) => void;
+}) {
+  const Component = modalComponentRegistry[schema.type];
+
+  return (
+    <Component
+      schema={schema}
+      state={state}
+      onChange={onChange}
+    />
+  );
+}
 
 export function SettingsModal({
   open,
@@ -25,7 +34,7 @@ export function SettingsModal({
   state,
   onChange,
   onClose,
-}: SettingsModalProps<any>) {
+}: SettingsModalProps) {
   if (!open) return null;
   if (!schema || !state) return null;
 
@@ -38,59 +47,13 @@ export function SettingsModal({
     }}>
         <h2>Settings</h2>
 
-        {schema.map((setting, idx) => {
-
-            // string
-            if (setting.type === "string") {
-                return (
-                    <div key={idx}>
-                        <label>
-                            {setting.label}
-                            <input
-                                type="text"
-                                value={state[setting.field]}
-                                onChange={(e) =>
-                                    onChange(setting.field, e.target.value)
-                                }
-                            />
-                        </label>
-                    </div>
-                );
-            }
-
-            // boolean
-            if (setting.type === "boolean") {
-                return (
-                    <label key={idx}>
-                        {setting.label}
-                        <input
-                            type="checkbox"
-                            checked={state[setting.field]}
-                            onChange={(e) =>
-                                onChange(setting.field, e.target.checked)
-                            }
-                        />
-                    </label>
-                );
-            }
-
-            // date
-            if (setting.type === "date") {
-                return (
-                    <label key={idx}>
-                        {setting.label}
-                        <input
-                            type="date"
-                            value={state[setting.field] || ""}
-                            onChange={(e) =>
-                                onChange(setting.field, e.target.value)
-                            }
-                        />
-                    </label>
-                );
-            }
-
-            
+        {schema.map((elementSchema, idx) => {
+            console.log(elementSchema)
+            return (
+                <div key={idx}>
+                    <SettingElement schema={elementSchema} onChange={onChange} state={state} />
+                </div>
+            )
         })}
 
         <button onClick={onClose}>Close</button>

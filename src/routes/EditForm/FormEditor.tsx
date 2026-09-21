@@ -1,7 +1,7 @@
-import { SettingsModal, SettingSchema } from "./SettingsModal";
+import { SettingsModal } from "./SettingsModal";
 import React from "react";
 import { useRef, useState, useEffect } from "react"
-import { componentRegistry } from "./componentRegistry";
+import { renderComponentRegistry } from "./renderComponents/renderComponentRegistry";
 import {
   DndContext,
   closestCenter,
@@ -16,7 +16,7 @@ import DragContainer from "./DragContainer"
 
 type Node = {
     id: string;
-    nodeType: keyof typeof componentRegistry;
+    nodeType: keyof typeof renderComponentRegistry;
     state: any;
 }
 type NodeState = Record<string, any>
@@ -28,7 +28,7 @@ type PageState = {
 
 // renders an element depending on the node
 const RenderNode = React.memo(function({ node }: { node: Node }) {
-  const entry = componentRegistry[node.nodeType];
+  const entry = renderComponentRegistry[node.nodeType];
   return entry.render(node.state);
 })
 
@@ -227,7 +227,7 @@ export function FormEditor() {
             </div>
             <SettingsModal
                 open={settingsOpen}
-                schema={currentSelectedNode ? componentRegistry[currentSelectedNode.nodeType].optionsSchema : null}
+                schema={currentSelectedNode ? renderComponentRegistry[currentSelectedNode.nodeType].optionsSchema : null}
                 state={currentSelectedNode ? currentSelectedNode.state : null}
                 onChange={updateNodeState}
                 onClose={() => setSettingsOpen(false)}
